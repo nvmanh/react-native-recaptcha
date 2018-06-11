@@ -19,9 +19,7 @@ const getWebviewContent = (siteKey) => {
 }
 
 const ReCaptchaView = ({
-  onSuccess,
-  onExpired,
-  onError,
+  onMessage,
   siteKey,
   containStyle,
   title,
@@ -31,19 +29,7 @@ const ReCaptchaView = ({
     <WebView
       ref={(ref) => { this.webview = ref; }}
       mixedContentMode={'always'}
-      onMessage={(event) => {
-        if (!event) return;
-        const data = event.nativeEvent.data;
-        console.log(data);
-        if (!data) return;
-        if (data === 'expired') {
-          onExpired();
-        } else if (data === 'error') {
-          onError();
-        } else {
-          onSuccess(data);
-        }
-      }}
+      onMessage={onMessage}
       javaScriptEnabled
       automaticallyAdjustContentInsets
       style={[{ backgroundColor: 'transparent', height: 500 }]}
@@ -55,9 +41,7 @@ const ReCaptchaView = ({
   );
 
 ReCaptchaView.propTypes = {
-  onError: PropTypes.func,
-  onSuccess: PropTypes.func,
-  onExpired: PropTypes.func,
+  onMessage: PropTypes.func,
   siteKey: PropTypes.string.isRequired,
   containStyle: PropTypes.any,
   url: PropTypes.string
@@ -65,9 +49,7 @@ ReCaptchaView.propTypes = {
 
 ReCaptchaView.defaultProps = {
   autoHeight: true,
-  onError: () => { },
-  onSuccess: () => { },
-  onExpired: () => { },
+  onMessage: (event) => null,
   title: '',
   description: '',
   url: ''

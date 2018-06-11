@@ -25,20 +25,31 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
-type Props = {};
-export default class App extends Component<Props> {
+export default class App extends Component {
   render() {
     return (
       <View style={{flex:1}}>
         <ReCaptchaView
-          onSucess={(val) => console.log('success: ' + val)}
-          onError={() => console.log('error')}
-          onExpired={() => console.log('expired')}
+          onMessage={this.onMessage}
           siteKey="6LcxWV4UAAAAAMYZC7ge5gEgP_QWle44hyvCIARl"
           url='http://your-domain.com'
         />
       </View>
     );
+  }
+
+  onMessage = (event) => {
+    if (!event) return;
+    const data = event.nativeEvent.data;
+    console.log(data);
+    if (!data) return;
+    if (data === 'expired') {
+      // onExpired();
+    } else if (data === 'error') {
+      // onError();
+    } else {
+      // onSuccess(data);
+    }
   }
 }
 
