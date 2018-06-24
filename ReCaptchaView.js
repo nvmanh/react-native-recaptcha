@@ -2,6 +2,18 @@ import React from 'react';
 import { WebView } from 'react-native';
 import PropTypes from 'prop-types';
 
+// fix https://github.com/facebook/react-native/issues/10865
+const patchPostMessageJsCode = `(${String(function() {
+  var originalPostMessage = window.postMessage
+  var patchedPostMessage = function(message, targetOrigin, transfer) {
+      originalPostMessage(message, targetOrigin, transfer)
+  }
+  patchedPostMessage.toString = function() {
+      return String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage')
+  }
+  window.postMessage = patchedPostMessage
+})})();`
+
 const getWebviewContent = (siteKey) => {
   const originalForm = '<!DOCTYPE html><html><head>' +
     '<style>  .text-xs-center { text-align: center; } .g-recaptcha { display: inline-block; } </style>' +
@@ -31,6 +43,7 @@ const ReCaptchaView = ({
       mixedContentMode={'always'}
       onMessage={onMessage}
       javaScriptEnabled
+      injectedJavaScript={patchPostMessageJsCode}
       automaticallyAdjustContentInsets
       style={[{ backgroundColor: 'transparent', height: 500 }]}
       source={{

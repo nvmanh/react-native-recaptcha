@@ -14,6 +14,7 @@ import {
   Dimensions
 } from 'react-native';
 import ReCaptchaView from './ReCaptchaView';
+import AutoHeightWebView from './AutoHeightWebView';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -28,11 +29,23 @@ const instructions = Platform.select({
 export default class App extends Component {
   render() {
     return (
-      <View style={{flex:1}}>
-        <ReCaptchaView
-          onMessage={this.onMessage}
+      <View style={{flex:1, paddingTop: 30}}>
+        <AutoHeightWebView
+          /* onMessage={this.onMessage} */
+          onSuccess={(val)=>{
+              // console.log(val);
+              alert(val);
+          }}
+          onError={()=> {
+              // console.log('onError');
+              alert('Error');
+          }}
+          onExpired={()=>{
+              // console.log('onExpired');
+              alert('Expired');
+          }}
           siteKey="6LcxWV4UAAAAAMYZC7ge5gEgP_QWle44hyvCIARl"
-          url='http://your-domain.com'
+          url="http://your-domain.com"
         />
       </View>
     );
